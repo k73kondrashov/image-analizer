@@ -40,8 +40,9 @@ class Database:
         self.corrupted_files = set()
 
         self.images_list = self._collect_images_path()
-        self._check_corrupted_files()
+        # self._check_corrupted_files()
         self.images = {}
+        name2hash = {}
 
         self.tasks = {task_name: task() for task_name, task in TASKS_DICT.items()}
 

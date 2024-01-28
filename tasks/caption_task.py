@@ -1,7 +1,8 @@
 from transformers import pipeline
+from images_database.tasks.base import BaseTask
 
 
-class CaptionTask:
+class CaptionTask(BaseTask):
     def __init__(self):
         self.captioner = pipeline("image-to-text", model="Salesforce/blip-image-captioning-base", device=0)
 

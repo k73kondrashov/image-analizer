@@ -1,8 +1,9 @@
 import easyocr
 import numpy as np
+from images_database.tasks.base import BaseTask
 
 
-class OCRTask:
+class OCRTask(BaseTask):
     def __init__(self):
         self.reader = easyocr.Reader(['ru', 'en'])
 
