@@ -1,7 +1,11 @@
-import torch
+from pathlib import Path
+
 import clip
-from images_database.tasks.base import BaseTask
 import numpy as np
+import torch
+from PIL import Image
+from images_database.tasks.base import BaseTask
+
 
 class ClipTask(BaseTask):
     def __init__(self):
@@ -22,3 +26,29 @@ class ClipTask(BaseTask):
             self.index_mapping[len(vectors)] = (image_info.hash, 0)
             vectors.append(image_info.embedding)
         return np.array(vectors)
+
+    def find_by_text(self, text):
+
+        text = clip.tokenize([text]).to(self.device)
+
+        with torch.no_grad():
+            text_features = self.model.encode_text(text).cpu().numpy()
+
+        res = self.index.search(text_features, 1)
+        return self.index_mapping[res[1][0, 0]][0]
+
+    def find_by_image(self, source):
+
+        if isinstance(source, (str, Path)):
+            image = Image.open(source)
+        elif isinstance(source, np.ndarray):
+            #TODO Add dim checker
+            image = Image.fromarray(source)
+        elif isinstance(source, Image.Image):
+            image = source
+        else:
+            raise TypeError(f"source must be a path to image, np.array or PIL.Image, got {type(source)}")
+
+        image_emb = self._process_image(image)['embedding']
+        res = self.index.search(image_emb[None, ...], 1)
+        return self.index_mapping[res[1][0, 0]][0]

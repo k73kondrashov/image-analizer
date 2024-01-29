@@ -1,17 +1,17 @@
+import hashlib
+import pickle
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List
-import hashlib
-import pickle
-from PIL import Image
-from PIL import UnidentifiedImageError
-from tqdm import tqdm
-from images_database.tasks.ocr_task import OCRTask
-from images_database.tasks.clip_task import ClipTask
-from images_database.tasks.caption_task import CaptionTask
-from images_database.tasks.face_task import FaceTask
 
 import numpy as np
+from PIL import Image
+from PIL import UnidentifiedImageError
+from images_database.tasks.caption_task import CaptionTask
+from images_database.tasks.clip_task import ClipTask
+from images_database.tasks.face_task import FaceTask
+from images_database.tasks.ocr_task import OCRTask
+from tqdm import tqdm
 
 IMGS_EXT = ['.jpeg', '.jpg', '.png']
 
@@ -42,7 +42,7 @@ class Database:
         self.images_list = self._collect_images_path()
         self._check_corrupted_files()
         self.images = {}
-        name2hash = {}
+        self.name2hash = {}
 
         self.tasks = {task_name: task() for task_name, task in TASKS_DICT.items()}
 
@@ -73,6 +73,7 @@ class Database:
                 **extracted_info
             )
             self.images[hash_value] = img_info
+            self.name2hash[path.name] = hash_value
 
     def save(self, path):
         with open(path, 'wb') as file_:

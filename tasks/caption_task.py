@@ -1,5 +1,5 @@
-from transformers import pipeline
 from images_database.tasks.base import BaseTask
+from transformers import pipeline
 
 
 class CaptionTask(BaseTask):

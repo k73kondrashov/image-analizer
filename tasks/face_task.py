@@ -1,9 +1,7 @@
-import insightface
-from insightface.app import FaceAnalysis
-from insightface.data import get_image as ins_get_image
-from images_database.tasks.base import BaseTask
 import numpy as np
 from PIL import ImageDraw, Image
+from images_database.tasks.base import BaseTask
+from insightface.app import FaceAnalysis
 
 
 class FaceTask(BaseTask):

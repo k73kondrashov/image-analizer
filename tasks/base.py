@@ -1,6 +1,7 @@
-import numpy as np
+from abc import abstractmethod
+
 import faiss
-from abc import ABC, abstractmethod
+import numpy as np
 
 
 class BaseTask:
@@ -20,5 +21,5 @@ class BaseTask:
         #     vectors = [None, ...]
         _, dim = vectors.shape
 
-        self.index = faiss.IndexFlatL2(dim)
+        self.index = faiss.IndexFlatIP(dim)
         self.index.add(vectors)
