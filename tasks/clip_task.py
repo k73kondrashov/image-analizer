@@ -27,17 +27,17 @@ class ClipTask(BaseTask):
             vectors.append(image_info.embedding)
         return np.array(vectors)
 
-    def find_by_text(self, text):
+    def find_by_text(self, text, score_idx=1):
 
         text = clip.tokenize([text]).to(self.device)
 
         with torch.no_grad():
             text_features = self.model.encode_text(text).cpu().numpy()
 
-        res = self.index.search(text_features, 1)
-        return self.index_mapping[res[1][0, 0]][0]
+        res = self.index.search(text_features, score_idx)
+        return self.index_mapping[res[1][0, -1]][0]
 
-    def find_by_image(self, source):
+    def find_by_image(self, source, score_idx=1):
 
         if isinstance(source, (str, Path)):
             image = Image.open(source)
@@ -50,5 +50,5 @@ class ClipTask(BaseTask):
             raise TypeError(f"source must be a path to image, np.array or PIL.Image, got {type(source)}")
 
         image_emb = self._process_image(image)['embedding']
-        res = self.index.search(image_emb[None, ...], 1)
-        return self.index_mapping[res[1][0, 0]][0]
+        res = self.index.search(image_emb[None, ...], score_idx)
+        return self.index_mapping[res[1][0, -1]][0]
