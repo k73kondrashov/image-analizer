@@ -38,3 +38,12 @@ class FaceTask(BaseTask):
         img1 = self.draw(image1, idx1)
         img2 = self.draw(image2, idx2)
         return img1, img2
+
+    def find(self, emb, count):
+
+        res = self.index.search(emb[None, :], count)
+        print(res)
+        hash2, idx2 = self.index_mapping[res[1][0, -1]]
+        return hash2, idx2
+
+        # img1, img2 = task.draw_match(database.images[hash1], idx1, database.images[hash2], idx2)
